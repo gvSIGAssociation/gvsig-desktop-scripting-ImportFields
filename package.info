@@ -1,0 +1,21 @@
+#
+#Mon Apr 23 21:19:19 CEST 2018
+owner=gvSIG Association
+code=ImportFields
+java-version=j1_7
+official=true
+type=Script
+version=1.0.0-1
+state=testing
+operating-system=all
+dependencies=
+sources-url=
+web-url=
+architecture=all
+model-version=1.0.1
+categories=View
+description=Import fields from a table into another table.
+owner-url=
+buildNumber=1
+gvSIG-version=2.5.0
+name=Import fields
