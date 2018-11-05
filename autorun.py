@@ -2,7 +2,7 @@
 
 import gvsig
 
-from addons.CoordinateCapture.actions import selfRegister
+from addons.ImportFields.actions import selfRegister
 
 def main(*args):
   selfRegister()

@@ -1,5 +1,5 @@
 #
-#Mon Apr 23 21:19:19 CEST 2018
+#Mon Oct 29 11:17:33 CET 2018
 owner=gvSIG Association
 code=ImportFields
 java-version=j1_7
@@ -17,5 +17,6 @@ categories=View
 description=Import fields from a table into another table.
 owner-url=
 buildNumber=1
+download-url=https\://github.com/gvSIGAssociation/gvsig-desktop-scripting-ImportFields/releases/download/1.0.0-1/gvSIG-desktop-2.5.0-ImportFields-1.0.0-1-testing-all-all-j1_7.gvspkg
 gvSIG-version=2.5.0
 name=Import fields
