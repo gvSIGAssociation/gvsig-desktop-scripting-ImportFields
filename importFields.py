@@ -154,7 +154,38 @@ class ImportFieldPanel(FormPanel):
     table =  self.jplTable.getComponents()[0].getComponents()[0].getComponents()[0]
     data = table.getModel().getDataVector()
     return data
-    
+  def getTable1(self):
+    return self.cmbTable1.getSelectedItem()
+  def getTable2(self):
+    return self.cmbTable2.getSelectedItem()
+  def getField1(self):
+    return self.pickerFields1.get()
+  def getField2(self):
+    return self.pickerFields2.get()
+
+def processImportFields(table1, field1, table2, field2, fields):
+  print "### Process import fields"
+  ft = table2.getFeatureStore().getDefaultFeatureType().getCopy()
+  editableft = gvsig.createFeatureType(ft)
+  newft = gvsig.createFeatureType()
+  for selectedField in fields:
+    #format name, newname, use
+    name = selectedField[0]
+    newname = selectedField[1]
+    use = selectedField[2]
+    if editableft.get(name)!=None:
+      if use:
+        print "keep", editableft.get(name)
+        editablefield = editableft.getEditableAttributeDescriptor(name)
+        editablefield.setName(newname)
+        newft.add(editablefield)
+      else:
+        print "delete"
+        #print ft.get(name).getName()
+
+  print "Result ft to add: ",newft
+  
+
 def main(*args):
   panel = ImportFieldPanel()
   panel.setPreferredSize(400,300)
@@ -168,9 +199,13 @@ def main(*args):
   )
   dialog.show(winmgr.MODE.DIALOG)
   if dialog.getAction()==winmgr.BUTTON_OK:
-    panel.save()
-    print "Ok"
-    print "Show field: "
+    table1 = panel.getTable1()
+    table2 = panel.getTable2()
+    field1 = panel.getField1()
+    field2 = panel.getField2()
+
+    fields = panel.getFieldsToUse()
+    processImportFields(table1, field1, table2, field2, fields)
   else:
     print "Cancel"
   
