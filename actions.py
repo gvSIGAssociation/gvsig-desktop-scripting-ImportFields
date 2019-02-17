@@ -11,25 +11,7 @@ from org.gvsig.scripting.app.extension import ScriptingExtension
 from org.gvsig.tools import ToolsLocator
 from org.gvsig.tools.swing.api import ToolsSwingLocator
 
-from addons.ImportFields.importFields import showImportFields
-
-class ImportFieldsExtension(ScriptingExtension):
-  def __init__(self):
-    pass
-
-  def canQueryByAction(self):
-    return True
-
-  def isEnabled(self,action):
-    return True
-
-  def isVisible(self,action):
-    return True
-    
-  def execute(self,actionCommand, *args):
-    actionCommand = actionCommand.lower()
-    if actionCommand == "table-import-fields":
-      showImportFields()
+from addons.ImportFields.importFieldsExtension import ImportFieldsExtension
 
 def selfRegister():
   application = ApplicationLocator.getManager()
