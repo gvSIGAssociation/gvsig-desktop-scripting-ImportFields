@@ -133,7 +133,6 @@ class ImportFieldPanel(FormPanel):
 
     featureType = layer.getFeatureStore().getDefaultFeatureType()
     propertyFields = [[attr.getName(), attr.getName(), True] for attr in featureType]
-    print propertyFields
 
     model = MyDefaultTableModel(propertyFields, columnNames)
     table = ImportFieldsSelectTable(model)
@@ -191,5 +190,5 @@ def main(*args):
     data = panel.getFieldsToUse()
     processImportFields(table1, field1.getName(), table2, field2.getName(), data)
   else:
-    print "Cancel"
+    pass
   
