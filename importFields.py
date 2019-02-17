@@ -41,6 +41,8 @@ from org.gvsig.app.project.documents.view import ViewDocument
 from org.gvsig.app.project.documents.table import TableDocument
 from gvsig import logger
 from gvsig import LOGGER_WARN,LOGGER_INFO,LOGGER_ERROR
+from addons.ImportFields.importFieldsLib import processImportFields
+
 class MyDefaultTableModel(DefaultTableModel):
   def isCellEditable(self, row, column):
     if column==0:
@@ -147,13 +149,21 @@ class ImportFieldPanel(FormPanel):
     self.jplTable.removeAll()
     self.jplTable.setLayout(BorderLayout())
     self.jplTable.add(pane, BorderLayout.CENTER)
+    self.jplTable.revalidate()
     self.jplTable.repaint()
-    self.jplTable.updateUI()
+    #self.jplTable.updateUI()
       
   def getFieldsToUse(self):
     table =  self.jplTable.getComponents()[0].getComponents()[0].getComponents()[0]
     data = table.getModel().getDataVector()
-    return data
+    newdata = []
+    for d in data:
+      newdic = {}
+      newdic['idfield'] = d[0]
+      newdic['idname'] = d[1]
+      newdic['use'] = d[2]
+      newdata.append(newdic)
+    return newdata
   def getTable1(self):
     return self.cmbTable1.getSelectedItem()
   def getTable2(self):
@@ -162,28 +172,6 @@ class ImportFieldPanel(FormPanel):
     return self.pickerFields1.get()
   def getField2(self):
     return self.pickerFields2.get()
-
-def processImportFields(table1, field1, table2, field2, fields):
-  print "### Process import fields"
-  ft = table2.getFeatureStore().getDefaultFeatureType().getCopy()
-  editableft = gvsig.createFeatureType(ft)
-  newft = gvsig.createFeatureType()
-  for selectedField in fields:
-    #format name, newname, use
-    name = selectedField[0]
-    newname = selectedField[1]
-    use = selectedField[2]
-    if editableft.get(name)!=None:
-      if use:
-        print "keep", editableft.get(name)
-        editablefield = editableft.getEditableAttributeDescriptor(name)
-        editablefield.setName(newname)
-        newft.add(editablefield)
-      else:
-        print "delete"
-        #print ft.get(name).getName()
-
-  print "Result ft to add: ",newft
   
 
 def main(*args):
@@ -204,8 +192,8 @@ def main(*args):
     field1 = panel.getField1()
     field2 = panel.getField2()
 
-    fields = panel.getFieldsToUse()
-    processImportFields(table1, field1, table2, field2, fields)
+    data = panel.getFieldsToUse()
+    processImportFields(table1, field1.getName(), table2, field2.getName(), data)
   else:
     print "Cancel"
   
