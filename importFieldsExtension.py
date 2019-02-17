@@ -48,7 +48,7 @@ class ImportFieldsExtension(ScriptingExtension, ActionListener):
     self.panel.setPreferredSize(400,300)
     i18nManager = ToolsLocator.getI18nManager()
     winmgr = ToolsSwingLocator.getWindowManager()
-    self.taskStatus = ToolsLocator.getTaskStatusManager().createDefaultSimpleTaskStatus("")
+    self.taskStatus = ToolsLocator.getTaskStatusManager().createDefaultSimpleTaskStatus(i18nManager.getTranslation("_Import_fields"))
     self.taskStatus.setAutoremove(True)
     
     self.dialog = winmgr.createDialog(

@@ -66,16 +66,12 @@ class ImportFieldPanel(FormPanel):
     self.lastTable = None
     i18Swing = ToolsSwingLocator.getToolsSwingManager()
     
-    i18Swing.translate(self.lblFields)
+    i18Swing.translate(self.lblImportFields)
+    i18Swing.translate(self.lblTable1)
+    i18Swing.translate(self.lblField1)
+    i18Swing.translate(self.lblTable2)
+    i18Swing.translate(self.lblField2)
     
-    #self.cboTypeReport.removeAllItems()
-    i18nManager = ToolsLocator.getI18nManager()
-    
-    #self.cboTypeReport.addItem(ReportFormatType(i18nManager.getTranslation("_By_table"),0))
-    #self.cboTypeReport.addItem(ReportFormatType(i18nManager.getTranslation("_With_two_columns"),1))
-
-    #if layer != None:
-    #  self.setLayer(layer)
     swm = DALSwingLocator.getSwingManager()
     
     self.pickerFields1 = swm.createAttributeDescriptorPickerController(self.cmbField1)
@@ -131,8 +127,8 @@ class ImportFieldPanel(FormPanel):
     i18nManager = ToolsLocator.getI18nManager()
     columnNames = [
                    i18nManager.getTranslation("_Field_name"),
-                   i18nManager.getTranslation("_Name_to_show"),
-                   i18nManager.getTranslation("_Show")
+                   i18nManager.getTranslation("_New_field_name"),
+                   i18nManager.getTranslation("_Importar")
                    ]
 
     featureType = layer.getFeatureStore().getDefaultFeatureType()
