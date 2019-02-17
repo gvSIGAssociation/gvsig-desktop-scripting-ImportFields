@@ -7,6 +7,7 @@ from org.gvsig.tools.dispose import DisposeUtils
 
 from org.gvsig.expressionevaluator import ExpressionEvaluatorLocator
 from org.gvsig.fmap.dal import DALLocator
+import sys
 
 def main(*args):
     project = gvsig.currentProject() #DefaultProject
