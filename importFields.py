@@ -155,10 +155,10 @@ class ImportFieldPanel(FormPanel):
     newdata = []
     for d in data:
       newdic = {}
-      newdic['idfield'] = d[0]
-      newdic['idname'] = d[1]
-      newdic['use'] = d[2]
-      newdata.append(newdic)
+      if d[2]==True:
+        newdic['idfield'] = d[0]
+        newdic['idname'] = d[1]
+        newdata.append(newdic)
     return newdata
   def getTable1(self):
     return self.cmbTable1.getSelectedItem()
