@@ -26,8 +26,8 @@
    </super>
    <at name="id">/home/osc/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/2.5.0/scripts/addons/ImportFields/importFields.xml</at>
    <at name="path">addons/ImportFields/importFields.xml</at>
-   <at name="rowspecs">CENTER:4DLU:NONE,CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE,CENTER:3PX:NONE,CENTER:DEFAULT:NONE,CENTER:17PX:NONE,CENTER:DEFAULT:NONE,CENTER:3PX:NONE,CENTER:DEFAULT:NONE,CENTER:6PX:NONE,FILL:MIN(12DLU;DEFAULT):GROW(1.0),CENTER:3PX:NONE</at>
-   <at name="colspecs">FILL:4DLU:NONE,FILL:127PX:NONE,FILL:126PX:GROW(1.0),FILL:4DLU:NONE</at>
+   <at name="rowspecs">CENTER:4DLU:NONE,CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE,CENTER:3PX:NONE,CENTER:DEFAULT:NONE,CENTER:17PX:NONE,CENTER:DEFAULT:NONE,CENTER:3PX:NONE,CENTER:DEFAULT:NONE,CENTER:6PX:NONE,FILL:DEFAULT:GROW(1.0),CENTER:3PX:NONE</at>
+   <at name="colspecs">FILL:4DLU:NONE,FILL:DEFAULT:NONE,FILL:126PX:GROW(1.0),FILL:4DLU:NONE</at>
    <at name="components">
     <object classname="java.util.LinkedList">
      <item >
@@ -75,7 +75,7 @@
              </object>
             </at>
             <at name="name">cmbTable1</at>
-            <at name="width">654</at>
+            <at name="width">377</at>
             <at name="items">
              <object classname="com.jeta.forms.store.properties.ItemsProperty">
               <at name="name">items</at>
@@ -134,7 +134,7 @@
              </object>
             </at>
             <at name="name">cmbTable2</at>
-            <at name="width">654</at>
+            <at name="width">377</at>
             <at name="items">
              <object classname="com.jeta.forms.store.properties.ItemsProperty">
               <at name="name">items</at>
@@ -193,7 +193,7 @@
              </object>
             </at>
             <at name="name">cmbField1</at>
-            <at name="width">654</at>
+            <at name="width">377</at>
             <at name="items">
              <object classname="com.jeta.forms.store.properties.ItemsProperty">
               <at name="name">items</at>
@@ -252,7 +252,7 @@
              </object>
             </at>
             <at name="name">cmbField2</at>
-            <at name="width">654</at>
+            <at name="width">377</at>
             <at name="items">
              <object classname="com.jeta.forms.store.properties.ItemsProperty">
               <at name="name">items</at>
@@ -311,8 +311,8 @@
              </object>
             </at>
             <at name="name">lblTable1</at>
-            <at name="width">123</at>
-            <at name="text">_Destination_table</at>
+            <at name="width">75</at>
+            <at name="text">_Table</at>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
               <at name="name">fill</at>
@@ -371,7 +371,7 @@
              </object>
             </at>
             <at name="name">lblField1</at>
-            <at name="width">123</at>
+            <at name="width">75</at>
             <at name="text">_Unique_field</at>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
@@ -431,8 +431,8 @@
              </object>
             </at>
             <at name="name">lblTable2</at>
-            <at name="width">123</at>
-            <at name="text">_Origin_table</at>
+            <at name="width">75</at>
+            <at name="text">_Join_table</at>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
               <at name="name">fill</at>
@@ -491,7 +491,7 @@
              </object>
             </at>
             <at name="name">lblField2</at>
-            <at name="width">123</at>
+            <at name="width">75</at>
             <at name="text">_Unique_field</at>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
@@ -523,7 +523,7 @@
          </at>
          <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
         </super>
-        <at name="id">embedded.584442850</at>
+        <at name="id">embedded.597068643</at>
         <at name="rowspecs">CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,FILL:51PX:GROW(1.0),CENTER:DEFAULT:NONE</at>
         <at name="colspecs">FILL:MIN(12DLU;DEFAULT):GROW(1.0)</at>
         <at name="components">
@@ -573,7 +573,7 @@
                   </object>
                  </at>
                  <at name="name">lblImportFields</at>
-                 <at name="width">776</at>
+                 <at name="width">451</at>
                  <at name="text">_Fields_to_import</at>
                  <at name="fill">
                   <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
@@ -614,8 +614,8 @@
                 <object classname="com.jeta.forms.store.support.PropertyMap">
                  <at name="autoscrolls">true</at>
                  <at name="name">jplTable</at>
-                 <at name="width">776</at>
-                 <at name="height">279</at>
+                 <at name="width">451</at>
+                 <at name="height">178</at>
                 </object>
                </at>
               </object>

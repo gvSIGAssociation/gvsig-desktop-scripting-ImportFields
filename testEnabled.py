@@ -17,7 +17,6 @@ from org.gvsig.app.project.documents.table import TableDocument
 def main(*args):
   store1 = gvsig.currentLayer().getFeatureStore()
   builder = store1.createExpressionBuilder()
-  expFilter = builder.like(8, 8)
     
 def testEnabledDocuments(*args):
   if gvsig.currentProject().getDocuments()>1:
