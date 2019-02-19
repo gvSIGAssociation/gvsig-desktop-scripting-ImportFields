@@ -137,7 +137,7 @@ class ImportFieldPanel(FormPanel):
     model = MyDefaultTableModel(propertyFields, columnNames)
     table = ImportFieldsSelectTable(model)
     table.setAutoResizeMode(3)
-
+    
     pane = JScrollPane(table)
     pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS)
     
@@ -147,7 +147,7 @@ class ImportFieldPanel(FormPanel):
     self.jplTable.revalidate()
     self.jplTable.repaint()
     #self.jplTable.updateUI()
-      
+    
   def getFieldsToUse(self):
     table =  self.jplTable.getComponents()[0].getComponents()[0].getComponents()[0]
     data = table.getModel().getDataVector()

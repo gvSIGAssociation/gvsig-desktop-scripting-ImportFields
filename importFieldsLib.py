@@ -18,8 +18,8 @@ def main(*args):
     project = gvsig.currentProject() #DefaultProject
     table1 = project.getView("Untitled").getLayer("templayer")
     table2 = project.getDocument("tipos")
-    field1 = "campo1"
-    field2 = "PK"
+    field1 = "TIPO"
+    field2 = "TIPO"
 
    
     data = [{'idfield':"Field1", 'idname': id_generator()},
@@ -35,6 +35,9 @@ def processImportFields(table1, field1, table2, field2, data, taskStatus=None):
   store2 = table2.getFeatureStore()
   ft1 = store1.getDefaultFeatureType()
   ft2 = store2.getDefaultFeatureType()
+  if store1==store2:
+    logger("Can't use same store for import tables", LOGGER_ERROR)
+    return
   # Checks
   ## Ningun del nombre de los campos nuevos usados existe ya en la tabla previa
   for d in data:
@@ -80,8 +83,12 @@ def processImportFields(table1, field1, table2, field2, data, taskStatus=None):
       taskStatus.incrementCurrentValue()
     # QUERY
     builder = store1.createExpressionBuilder()
-    #expFilter = builder.eq(str(field2), f1.get(field1)).toString()
-    expFilter = str(field1) + "=" + str(f2.get(field2))
+    ## Eq expression
+    expFilter = builder.eq(
+          builder.column(field1),
+          builder.constant(f2.get(field2))
+          ).toString()
+
     exp = ExpressionEvaluatorLocator.getManager().createExpression()
     exp.setPhrase(expFilter)
     evaluator = DALLocator.getDataManager().createExpresion(exp)
