@@ -82,7 +82,7 @@ class ImportFieldPanel(FormPanel):
       logger("Not able to find 2 tables to execute the tool", LOGGER_INFO)
       return
     self.cmbTable2.setModel(DefaultComboBoxModel(allDocuments))
-    if len(allDocuments)>0:
+    if len(allDocuments)>1:
       self.cmbTable2.setSelectedIndex(1)
     else:
       self.cmbTable2.setSelectedIndex(0)
