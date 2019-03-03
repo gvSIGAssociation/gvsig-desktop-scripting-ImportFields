@@ -9,7 +9,7 @@ from org.gvsig.app.project.documents.table.gui import FeatureTableDocumentPanel
 from org.gvsig.scripting.app.extension import ScriptingExtension
 from org.gvsig.tools.swing.api import ToolsSwingLocator
 from org.gvsig.tools.swing.api.windowmanager import WindowManager
-
+from org.gvsig.app.project.documents.table import TableManager
 from org.gvsig.tools import ToolsLocator
 import thread
 
@@ -29,19 +29,36 @@ class ImportFieldsExtension(ScriptingExtension, ActionListener):
     return True
 
   def isEnabled(self,action):
-    if gvsig.currentProject().getDocuments()>1:
-      for doc in gvsig.currentProject().getDocuments():
-        if isinstance(doc,FeatureTableDocumentPanel):
-          return True
-        elif isinstance(doc,TableDocument):
-          return True
-        elif isinstance(doc, DefaultViewDocument):
-          layers = doc.getMapContext().hasLayers()
-          return True
+    #if gvsig.currentProject().getDocuments()>1:
+    #  for doc in gvsig.currentProject().getDocuments():
+    #    if isinstance(doc,FeatureTableDocumentPanel):
+    #      return True
+    #    elif isinstance(doc,TableDocument):
+    #      return True
+    #    elif isinstance(doc, DefaultViewDocument):
+    #      layers = doc.getMapContext().hasLayers()
+    #      return True
+    #return False
+    if gvsig.currentDocument(TableManager.TYPENAME)!=None:
+      doc = gvsig.currentDocument(TableManager.TYPENAME).getMainWindow()
+      return isinstance(doc, FeatureTableDocumentPanel)
     return False
     
   def isVisible(self,action):
-    return True
+    #if gvsig.currentProject().getDocuments()>1:
+    #  for doc in gvsig.currentProject().getDocuments():
+    #    if isinstance(doc,FeatureTableDocumentPanel):
+    #      return True
+    #    elif isinstance(doc,TableDocument):
+    #      return True
+    #    elif isinstance(doc, DefaultViewDocument):
+    #      layers = doc.getMapContext().hasLayers()
+    #      return True
+    #return False
+    if gvsig.currentDocument(TableManager.TYPENAME)!=None:
+      doc = gvsig.currentDocument(TableManager.TYPENAME).getMainWindow()
+      return isinstance(doc, FeatureTableDocumentPanel)
+    return False
     
   def execute(self,actionCommand, *args):
     self.panel = ImportFieldPanel()
