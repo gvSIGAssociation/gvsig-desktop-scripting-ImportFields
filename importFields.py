@@ -34,7 +34,7 @@ from java.awt.geom import Point2D
 from java.lang import Object
 from javax.swing import DefaultComboBoxModel
 
-
+from org.gvsig.fmap.mapcontext.layers.vectorial import FLyrVect
 from org.gvsig.fmap.dal.swing import DALSwingLocator
 from org.gvsig.app import ApplicationLocator
 from org.gvsig.app.project.documents.view import ViewDocument
@@ -117,7 +117,8 @@ class ImportFieldPanel(FormPanel):
           #print view, type(view)
           for layer in view.getMapContext().getLayers():
             #print "--", layer==mlayer, layer.getName()
-            all.append(layer)
+            if isinstance(layer, FLyrVect):
+              all.append(layer)
       elif isinstance(view, TableDocument):
         #print "--", view
         all.append(view)
