@@ -109,19 +109,19 @@ class ImportFieldPanel(FormPanel):
     application = ApplicationLocator.getManager()
     project = application.getCurrentProject()
     mlayer = gvsig.currentLayer()
-    views = project.getDocuments()
+    docs = project.getDocuments()
     all = []
-    for view in views:
-      #print view, type(view)
-      if isinstance(view, ViewDocument):
-          #print view, type(view)
-          for layer in view.getMapContext().getLayers():
+    for doc in docs:
+      #print doc, type(doc)
+      if isinstance(doc, ViewDocument):
+          for layer in doc.getMapContext().getLayers():
             #print "--", layer==mlayer, layer.getName()
             if isinstance(layer, FLyrVect):
               all.append(layer)
-      elif isinstance(view, TableDocument):
-        #print "--", view
-        all.append(view)
+      elif isinstance(doc, TableDocument):
+        #print "--", doc
+        if doc.getAssociatedLayer()==None:
+          all.append(doc)
     return all
   
   def setLayer(self, layer):
