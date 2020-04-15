@@ -10,20 +10,21 @@ from org.gvsig.fmap.dal import DALLocator
 import sys
 import string
 import random
+from org.gvsig.tools.namestranslator import NamesTranslator
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
    return ''.join(random.choice(chars) for _ in range(size))
    
 def main(*args):
     project = gvsig.currentProject() #DefaultProject
-    table1 = project.getView("Untitled").getLayer("templayer")
-    table2 = project.getDocument("tipos")
-    field1 = "TIPO"
-    field2 = "TIPO"
+    table1 = project.getView(u"Untitled").getLayer("puntos_norep")
+    table2 = project.getDocument("tabla")
+    field1 = "campo2"
+    field2 = "Punto"
 
-   
-    data = [{'idfield':"Field1", 'idname': id_generator()},
-            {'idfield':"Field2", 'idname':id_generator()}
+    #data = [{'idfield':"Tipo", 'idname': id_generator()}]
+    data = [{'idfield':"Tipo", 'idname': id_generator()},
+            {'idfield':"Latitud", 'idname':id_generator()}
     ]
     
     processImportFields(table1, field1, table2, field2, data)
@@ -31,10 +32,17 @@ def main(*args):
 def processImportFields(tableTarget, fieldTarget, tableSource, fieldSource, data, taskStatus=None):
   ### Init processimportfields"
   # Update ft
+  #translator = NamesTranslator.createTrimTranslator(11)
+  
   storeTarget = tableTarget.getFeatureStore()
   storeSource = tableSource.getFeatureStore()
   ftTarget = storeTarget.getDefaultFeatureType()
   ftSource = storeSource.getDefaultFeatureType()
+
+  #Names translator init
+  #for attr in ftTarget:
+  #  translator.addSource(attr.getName())
+  #
   if storeTarget==storeSource:
     logger("Can't use same store for import tables", LOGGER_ERROR)
     return
@@ -105,7 +113,7 @@ def processImportFields(tableTarget, fieldTarget, tableSource, fieldSource, data
     
     # UPDATE VALUES
     fsetTarget = storeTarget.getFeatureSet(fqTarget)
-    for fSource in fsetSource:
+    for ftTarget in fsetTarget:
       efTarget = ftTarget.getEditable()
       for d in data:
         if newftTarget.getAttributeDescriptor(d["idname"]).isReadOnly():
