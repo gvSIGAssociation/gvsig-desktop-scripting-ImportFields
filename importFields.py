@@ -33,7 +33,7 @@ from java.awt import BorderLayout
 from java.awt.geom import Point2D
 from java.lang import Object
 from javax.swing import DefaultComboBoxModel
-
+from org.gvsig.tools.namestranslator import NamesTranslator
 from org.gvsig.fmap.mapcontext.layers.vectorial import FLyrVect
 from org.gvsig.fmap.dal.swing import DALSwingLocator
 from org.gvsig.app import ApplicationLocator
@@ -42,29 +42,101 @@ from org.gvsig.app.project.documents.table import TableDocument
 from gvsig import logger
 from gvsig import LOGGER_WARN,LOGGER_INFO,LOGGER_ERROR
 from addons.ImportFields.importFieldsLib import processImportFields
+from org.gvsig.fmap.dal.feature.impl import DefaultEditableFeatureAttributeDescriptor
+from javax.swing import JTable
+from javax.swing.table import AbstractTableModel
 
-class MyDefaultTableModel(DefaultTableModel):
+class ImportAttribute():
+  def __init__(self, attr, nameTranslator): #EditableAttr
+    self.attr = attr
+    self.nameTranslator = nameTranslator
+    self.toImport = True
+  def getName(self):
+    return self.attr.getName()
+  def getNewName(self):
+    return self.nameTranslator.getAllTranslations(self.attr.getName())[-1]
+  def setImport(self, toImport):
+    self.toImport = toImport
+  def getImport(self):
+    return self.toImport
+  def setNewName(self, newName, translatorIndexesSecondFt, blockedFieldNames):
+    print "ImportAttribute: setNewName:",self.getName(), newName, translatorIndexesSecondFt
+    sourceIndex = translatorIndexesSecondFt[self.getName()]
+    if (newName in blockedFieldNames):
+      return
+    self.nameTranslator.setTranslation(sourceIndex, newName)
+    
+class MyDefaultTableModel(AbstractTableModel):
+  def __init__(self, panel, attributes, translator, translatorIndexesSecondFt, blockedFieldNames, columnNames):
+    self.attributes = attributes
+    self.translator = translator
+    self.columnNames = columnNames
+    self.panel = panel
+    if translatorIndexesSecondFt == None:
+      translatorIndexesSecondFt = {}
+    self.translatorIndexesSecondFt = translatorIndexesSecondFt
+    if blockedFieldNames == None:
+      blockedFieldNames = []
+    self.blockedFieldNames = blockedFieldNames
+  
+  def getData(self):
+    data = []
+    for attr in self.attributes:
+      lstAttr = []
+      lstAttr.append(attr.getName())
+      lstAttr.append(attr.getNewName())
+      lstAttr.append(attr.getImport())
+      data.append(lstAttr)
+    return data
+  
+  def setValueAt(self, aValue, rowIndex, columnIndex):
+    myattr = self.attributes[rowIndex]
+    if (columnIndex == 1):
+      if (aValue in self.blockedFieldNames):
+         self.panel.messageController.setText("Field_already_exists_in_source_layer: "+aValue)
+         return
+      myattr.setNewName(aValue, self.translatorIndexesSecondFt, self.blockedFieldNames)
+    elif (columnIndex == 2):
+      myattr.setImport(aValue)
+  def getValueAt(self, rowIndex, columnIndex):
+    myattr = self.attributes[rowIndex]
+    if (columnIndex == 0):
+      return myattr.getName()
+    elif (columnIndex == 1):
+      return myattr.getNewName()
+    elif (columnIndex == 2):
+      return myattr.getImport()
+    return None
+    
   def isCellEditable(self, row, column):
     if column==0:
       return False
     else:
       return True
-    
-class ImportFieldsSelectTable(JTable):
-  def __init__(self, model):
-    self.setModel(model)
+
+  def getColumnName(self, columnIndex):
+    return self.columnNames[columnIndex]
     
   def getColumnClass(self, column):
     if column==2:
-        return Boolean
+      return Boolean
     else:
-        return String
-
+      return String
+      
+  def getRowCount(self):
+    return len(self.attributes)
+    
+  def getColumnCount(self):
+    return 3
+    
 class ImportFieldPanel(FormPanel):
   def __init__(self):
     FormPanel.__init__(self,getResource(__file__,"importFields.xml"))
     self.lastTable = None
     i18Swing = ToolsSwingLocator.getToolsSwingManager()
+    self.ft1 = None
+    self.ft2 = None
+    self.blockedNames = []
     
     i18Swing.translate(self.lblImportFields)
     i18Swing.translate(self.lblTable1)
@@ -76,52 +148,84 @@ class ImportFieldPanel(FormPanel):
     
     self.pickerFields1 = swm.createAttributeDescriptorPickerController(self.cmbField1)
     self.pickerFields2 = swm.createAttributeDescriptorPickerController(self.cmbField2)
+    self.messageController = ToolsSwingLocator.getToolsSwingManager().createMessageBarController(self.lblMessage, 10000);
 
-    allDocuments = self.getAllValidDocuments()
-    if len(allDocuments)==0:
+    allDocuments = self.getAllValidDocuments(None)
+    if len(allDocuments)<2:
       logger("Not able to find 2 tables to execute the tool", LOGGER_INFO)
       return
-    self.cmbTable2.setModel(DefaultComboBoxModel(allDocuments))
+    self.cmbTable1.setModel(DefaultComboBoxModel(allDocuments))
+    self.cmbTable1.setSelectedIndex(0)
+    self.cmbTable1_change()
+    self.ft1 = self.cmbTable1.getSelectedItem().getFeatureStore().getDefaultFeatureType()
+    self.ft2 = self.cmbTable2.getSelectedItem().getFeatureStore().getDefaultFeatureType()
+    
+    self.pickerFields1.setFeatureType(self.ft1)
+    self.pickerFields2.setFeatureType(self.ft2)
+    self.setLayer(self.cmbTable2.getSelectedItem())
+    self.regenerateTranslator()
+    
+  def cmbTable2_change(self,*args):
+    newLayer=self.cmbTable2.getSelectedItem()
+    self.regenerateTranslator()
+    self.setLayer(newLayer)
+    self.ft2 = self.cmbTable2.getSelectedItem().getFeatureStore().getDefaultFeatureType()
+    self.pickerFields2.setFeatureType(self.ft2)
+    
+    
+  def cmbTable1_change(self,*args):
+    table1Item =  self.cmbTable1.getSelectedItem()
+    self.ft1 = table1Item.getFeatureStore().getDefaultFeatureType()
+    allDocuments = self.getAllValidDocuments(table1Item)
+    model = DefaultComboBoxModel(allDocuments)
+    self.cmbTable2.setModel(model)
     if len(allDocuments)>1:
       self.cmbTable2.setSelectedIndex(1)
     else:
       self.cmbTable2.setSelectedIndex(0)
-    self.cmbTable1.setModel(DefaultComboBoxModel(allDocuments))
-    self.cmbTable1.setSelectedIndex(0)
-    ft1 = self.cmbTable1.getSelectedItem().getFeatureStore().getDefaultFeatureType()
-    ft2 = self.cmbTable2.getSelectedItem().getFeatureStore().getDefaultFeatureType()
+    self.cmbTable2_change()
     
-    self.pickerFields1.setFeatureType(ft1)
-    self.pickerFields2.setFeatureType(ft2)
-    self.setLayer(self.cmbTable2.getSelectedItem())
+    self.regenerateTranslator()
+    self.pickerFields1.setFeatureType(self.ft1)
     
-  def cmbTable2_change(self,*args):
-    newLayer=self.cmbTable2.getSelectedItem()
-    self.setLayer(newLayer)
-    ft2 = self.cmbTable2.getSelectedItem().getFeatureStore().getDefaultFeatureType()
-    self.pickerFields2.setFeatureType(ft2)
-    
-  def cmbTable1_change(self,*args):
-    ft1 = self.cmbTable1.getSelectedItem().getFeatureStore().getDefaultFeatureType()
-    self.pickerFields1.setFeatureType(ft1)
-    
-  def getAllValidDocuments(self):
+     
+  def regenerateTranslator(self):
+     self.translatorIndexesSecondFt = {}
+     self.translator = NamesTranslator.createTrimTranslator(11)
+     self.blockedNames = []
+     if (self.ft1!=None):
+       for attr in self.ft1:
+         self.translator.addSource(attr.getName())
+         self.blockedNames.append(attr.getName())
+     if (self.ft2!=None):
+       for attr in self.ft2:
+          position = self.translator.addSource(attr.getName())
+          self.translatorIndexesSecondFt[attr.getName()] = position
+       
+  def getAllValidDocuments(self, documentException=None):
     application = ApplicationLocator.getManager()
     project = application.getCurrentProject()
     mlayer = gvsig.currentLayer()
     docs = project.getDocuments()
     all = []
-    for doc in docs:
-      #print doc, type(doc)
-      if isinstance(doc, ViewDocument):
-          for layer in doc.getMapContext().getLayers():
-            #print "--", layer==mlayer, layer.getName()
-            if isinstance(layer, FLyrVect):
-              all.append(layer)
-      elif isinstance(doc, TableDocument):
-        #print "--", doc
-        if doc.getAssociatedLayer()==None:
-          all.append(doc)
+    try:
+      for doc in docs:
+        #print doc, type(doc)
+        if isinstance(doc, ViewDocument):
+            for layer in doc.getMapContext().getLayers():
+              #print "--", layer==mlayer, layer.getName()
+              if isinstance(layer, FLyrVect):
+                if documentException!=layer:
+                  all.append(layer)
+        elif isinstance(doc, TableDocument):
+          #print "--", doc
+          if doc.getAssociatedLayer()==None:
+            if documentException!=doc:
+                all.append(doc)
+    except :
+      ex = sys.exc_info()[1]
+      print "Error", ex.__class__.__name__, str(ex)
+
     return all
   
   def setLayer(self, layer):
@@ -133,25 +237,20 @@ class ImportFieldPanel(FormPanel):
                    ]
 
     featureType = layer.getFeatureStore().getDefaultFeatureType()
-    propertyFields = [[attr.getName(), attr.getName(), True] for attr in featureType]
+    #propertyFields = [[attr.getName(), attr.getName(), True] for attr in featureType]
 
-    model = MyDefaultTableModel(propertyFields, columnNames)
-    table = ImportFieldsSelectTable(model)
-    table.setAutoResizeMode(3)
+    propertyFields = []
+    for attr in featureType:
+      eAttr = DALLocator.getDataManager().createFeatureAttributeDescriptor()
+      eAttr.copyFrom(attr.getCopy())
+      propertyFields.append(ImportAttribute(eAttr, self.translator))
     
-    pane = JScrollPane(table)
-    pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS)
-    
-    self.jplTable.removeAll()
-    self.jplTable.setLayout(BorderLayout())
-    self.jplTable.add(pane, BorderLayout.CENTER)
-    self.jplTable.revalidate()
-    self.jplTable.repaint()
-    #self.jplTable.updateUI()
+    model = MyDefaultTableModel(self, propertyFields, self.translator, self.translatorIndexesSecondFt, self.blockedNames, columnNames)
+    self.tblFields.setModel(model)
     
   def getFieldsToUse(self):
-    table =  self.jplTable.getComponents()[0].getComponents()[0].getComponents()[0]
-    data = table.getModel().getDataVector()
+    data = self.tblFields.getModel().getData()
+    #print "DATA:", data
     newdata = []
     for d in data:
       newdic = {}
@@ -159,7 +258,9 @@ class ImportFieldPanel(FormPanel):
         newdic['idfield'] = d[0]
         newdic['idname'] = d[1]
         newdata.append(newdic)
+    print "FIELTOUSE:", newdata
     return newdata
+    
   def getTable1(self):
     return self.cmbTable1.getSelectedItem()
   def getTable2(self):
@@ -168,7 +269,8 @@ class ImportFieldPanel(FormPanel):
     return self.pickerFields1.get()
   def getField2(self):
     return self.pickerFields2.get()
-  
+  def getTranslator(self):
+    return self.translator
 
 def main(*args):
   panel = ImportFieldPanel()
@@ -189,7 +291,8 @@ def main(*args):
     field2 = panel.getField2()
 
     data = panel.getFieldsToUse()
-    processImportFields(table1, field1.getName(), table2, field2.getName(), data)
+    translator = panel.getTranslator()
+    processImportFields(table1, field1.getName(), table2, field2.getName(), data, translator)
   else:
     pass
   

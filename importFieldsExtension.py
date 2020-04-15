@@ -89,10 +89,11 @@ class ImportFieldsExtension(ScriptingExtension, ActionListener):
       field2 = self.panel.getField2().getName()
   
       data = self.panel.getFieldsToUse()
-      thread.start_new_thread(self.process, (table1, field1, table2, field2, data))
+      translator = self.panel.getTranslator()
+      thread.start_new_thread(self.process, (table1, field1, table2, field2, data, translator))
     
 
-  def process(self,table1, field1, table2, field2, data):
-    processImportFields(table1, field1, table2, field2, data, self.taskStatus)
+  def process(self, table1, field1, table2, field2, data, translator):
+    processImportFields(table1, field1, table2, field2, data, translator, self.taskStatus)
     self.taskStatus.terminate()
   

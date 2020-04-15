@@ -29,10 +29,11 @@ def main(*args):
     
     processImportFields(table1, field1, table2, field2, data)
     
-def processImportFields(tableTarget, fieldTarget, tableSource, fieldSource, data, taskStatus=None):
+def processImportFields(tableTarget, fieldTarget, tableSource, fieldSource, data, translator, taskStatus=None):
   ### Init processimportfields"
   # Update ft
   #translator = NamesTranslator.createTrimTranslator(11)
+  
   
   storeTarget = tableTarget.getFeatureStore()
   storeSource = tableSource.getFeatureStore()
