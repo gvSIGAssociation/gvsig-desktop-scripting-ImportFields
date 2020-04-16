@@ -60,7 +60,6 @@ class ImportAttribute():
   def getImport(self):
     return self.toImport
   def setNewName(self, newName, translatorIndexesSecondFt, blockedFieldNames):
-    print "ImportAttribute: setNewName:",self.getName(), newName, translatorIndexesSecondFt
     sourceIndex = translatorIndexesSecondFt[self.getName()]
     if (newName in blockedFieldNames):
       return
@@ -93,7 +92,8 @@ class MyDefaultTableModel(AbstractTableModel):
     myattr = self.attributes[rowIndex]
     if (columnIndex == 1):
       if (aValue in self.blockedFieldNames):
-         self.panel.messageController.setText("Field_already_exists_in_source_layer: "+aValue)
+         i18nManager = ToolsLocator.getI18nManager()
+         self.panel.messageController.setText(i18nManager.getTranslation("_Field_already_exists_in_base_layer")+": "+aValue)
          return
       myattr.setNewName(aValue, self.translatorIndexesSecondFt, self.blockedFieldNames)
     elif (columnIndex == 2):
