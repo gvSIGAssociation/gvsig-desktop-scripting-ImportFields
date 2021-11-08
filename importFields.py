@@ -241,7 +241,7 @@ class ImportFieldPanel(FormPanel):
 
     propertyFields = []
     for attr in featureType:
-      eAttr = DALLocator.getDataManager().createFeatureAttributeDescriptor()
+      eAttr = DALLocator.getDataManager().createFeatureAttributeDescriptor(attr.getName(), attr.getType())
       eAttr.copyFrom(attr.getCopy())
       propertyFields.append(ImportAttribute(eAttr, self.translator))
     
