@@ -1,21 +1,22 @@
 #
-#Wed Apr 15 19:27:07 CEST 2020
+#Mon Nov 08 19:34:21 CET 2021
 owner=gvSIG Association
 code=ImportFields
+download-url=https\://github.com/gvSIGAssociation/gvsig-desktop-scripting-ImportFields/releases/download/1.0.0-10/gvSIG-desktop-2.6.0-ImportFields-1.0.0-10-testing-all-all-j1_7.gvspkg
 java-version=j1_7
+operating-system=all
+description=Import fields from a table into another table.
 official=true
 type=Script
-version=1.0.0-8
-state=testing
-operating-system=all
+web-url=
+version=1.0.0-10
+buildNumber=10
+owner-url=
 dependencies=
 sources-url=
-web-url=
-architecture=all
-model-version=1.0.1
-categories=View,Table
-description=Import fields from a table into another table.
-owner-url=
-buildNumber=8
-gvSIG-version=2.5.1
 name=Import fields
+gvSIG-version=2.6.0
+state=testing
+categories=View,Table
+model-version=1.0.1
+architecture=all
