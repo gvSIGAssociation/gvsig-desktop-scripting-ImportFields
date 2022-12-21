@@ -26,7 +26,7 @@ from org.gvsig.tools.dataTypes import DataTypes
 from javax.swing.table import DefaultTableModel
 from javax.swing import JTable
 from org.gvsig.tools.evaluator import EvaluatorException
-from java.lang import Boolean, String
+from java.lang import Boolean, String, Integer
 from javax.swing import JScrollPane
 from javax.swing import ScrollPaneConstants
 from java.awt import BorderLayout
@@ -42,15 +42,17 @@ from org.gvsig.app.project.documents.table import TableDocument
 from gvsig import logger
 from gvsig import LOGGER_WARN,LOGGER_INFO,LOGGER_ERROR
 from addons.ImportFields.importFieldsLib import processImportFields
-from org.gvsig.fmap.dal.feature.impl import DefaultEditableFeatureAttributeDescriptor
 from javax.swing import JTable
 from javax.swing.table import AbstractTableModel
+from org.gvsig.tools.swing.api.windowmanager import WindowManager
+import thread
 
 class ImportAttribute():
-  def __init__(self, attr, nameTranslator): #EditableAttr
-    self.attr = attr
+  def __init__(self, attr, nameTranslator):
+    self.attr = attr #DefaultEditableFeatureAttributeDescriptor
     self.nameTranslator = nameTranslator
     self.toImport = True
+    self.size = attr.getSize()
   def getName(self):
     return self.attr.getName()
   def getNewName(self):
@@ -64,6 +66,11 @@ class ImportAttribute():
     if (newName in blockedFieldNames):
       return
     self.nameTranslator.setTranslation(sourceIndex, newName)
+  def setSize(self, size):
+    self.size = size
+  def getSize(self):
+    return self.size
+
     
 class MyDefaultTableModel(AbstractTableModel):
   def __init__(self, panel, attributes, translator, translatorIndexesSecondFt, blockedFieldNames, columnNames):
@@ -85,6 +92,7 @@ class MyDefaultTableModel(AbstractTableModel):
       lstAttr.append(attr.getName())
       lstAttr.append(attr.getNewName())
       lstAttr.append(attr.getImport())
+      lstAttr.append(attr.getSize())
       data.append(lstAttr)
     return data
   
@@ -98,6 +106,9 @@ class MyDefaultTableModel(AbstractTableModel):
       myattr.setNewName(aValue, self.translatorIndexesSecondFt, self.blockedFieldNames)
     elif (columnIndex == 2):
       myattr.setImport(aValue)
+    elif (columnIndex == 3):
+      myattr.setSize(aValue)
+      
   def getValueAt(self, rowIndex, columnIndex):
     myattr = self.attributes[rowIndex]
     if (columnIndex == 0):
@@ -106,6 +117,8 @@ class MyDefaultTableModel(AbstractTableModel):
       return myattr.getNewName()
     elif (columnIndex == 2):
       return myattr.getImport()
+    elif (columnIndex == 3):
+      return myattr.getSize()
     return None
     
   def isCellEditable(self, row, column):
@@ -120,6 +133,8 @@ class MyDefaultTableModel(AbstractTableModel):
   def getColumnClass(self, column):
     if column==2:
       return Boolean
+    elif column==3:
+      return Integer
     else:
       return String
       
@@ -127,7 +142,7 @@ class MyDefaultTableModel(AbstractTableModel):
     return len(self.attributes)
     
   def getColumnCount(self):
-    return 3
+    return len(self.columnNames)
     
 class ImportFieldPanel(FormPanel):
   def __init__(self):
@@ -164,6 +179,8 @@ class ImportFieldPanel(FormPanel):
     self.pickerFields2.setFeatureType(self.ft2)
     self.setLayer(self.cmbTable2.getSelectedItem())
     self.regenerateTranslator()
+    self.setPreferredSize(400,300)
+    
     
   def cmbTable2_change(self,*args):
     newLayer=self.cmbTable2.getSelectedItem()
@@ -191,7 +208,7 @@ class ImportFieldPanel(FormPanel):
      
   def regenerateTranslator(self):
      self.translatorIndexesSecondFt = {}
-     self.translator = NamesTranslator.createTrimTranslator(11)
+     self.translator = NamesTranslator.createTrimTranslator(10)
      self.blockedNames = []
      if (self.ft1!=None):
        for attr in self.ft1:
@@ -231,9 +248,10 @@ class ImportFieldPanel(FormPanel):
   def setLayer(self, layer):
     i18nManager = ToolsLocator.getI18nManager()
     columnNames = [
-                   i18nManager.getTranslation("_Field_name"),
-                   i18nManager.getTranslation("_New_field_name"),
-                   i18nManager.getTranslation("_Importar")
+                   i18nManager.getTranslation("_Field"),
+                   i18nManager.getTranslation("_Target_field_name"),
+                   i18nManager.getTranslation("_Import"),
+                   i18nManager.getTranslation("_Size")
                    ]
 
     featureType = layer.getFeatureStore().getDefaultFeatureType()
@@ -257,6 +275,7 @@ class ImportFieldPanel(FormPanel):
       if d[2]==True:
         newdic['idfield'] = d[0]
         newdic['idname'] = d[1]
+        newdic['size'] = d[3]
         newdata.append(newdic)
     print "FIELTOUSE:", newdata
     return newdata
@@ -272,27 +291,40 @@ class ImportFieldPanel(FormPanel):
   def getTranslator(self):
     return self.translator
 
+  def process(self, dialog, taskStatus):
+    winmgr = ToolsSwingLocator.getWindowManager()
+    if dialog.getAction()==winmgr.BUTTON_CANCEL:
+      taskStatus.terminate()
+      return
+    if dialog.getAction()==winmgr.BUTTON_OK:
+      table1 = self.getTable1()
+      table2 = self.getTable2()
+      field1 = self.getField1().getName()
+      field2 = self.getField2().getName()
+  
+      data = self.getFieldsToUse()
+      translator = self.getTranslator()
+      thread.start_new_thread(self.__process, (table1, field1, table2, field2, data, translator, taskStatus))
+    
+
+  def __process(self, table1, field1, table2, field2, data, translator, taskStatus):
+    processImportFields(table1, field1, table2, field2, data, translator, taskStatus)
+    taskStatus.terminate()
+
+
 def main(*args):
-  panel = ImportFieldPanel()
-  panel.setPreferredSize(400,300)
-
-  winmgr = ToolsSwingLocator.getWindowManager()
-  dialog = winmgr.createDialog(
-    panel.asJComponent(),
-    "ReportByPoint test",
-    "ReportByPoint information",
-    winmgr.BUTTONS_OK_CANCEL
-  )
-  dialog.show(winmgr.MODE.DIALOG)
-  if dialog.getAction()==winmgr.BUTTON_OK:
-    table1 = panel.getTable1()
-    table2 = panel.getTable2()
-    field1 = panel.getField1()
-    field2 = panel.getField2()
-
-    data = panel.getFieldsToUse()
-    translator = panel.getTranslator()
-    processImportFields(table1, field1.getName(), table2, field2.getName(), data, translator)
-  else:
-    pass
+    panel = ImportFieldPanel()
+    i18nManager = ToolsLocator.getI18nManager()
+    winmgr = ToolsSwingLocator.getWindowManager()
+    taskStatus = ToolsLocator.getTaskStatusManager().createDefaultSimpleTaskStatus(i18nManager.getTranslation("_Import_fields"))
+    taskStatus.setAutoremove(True)
+    
+    dialog = winmgr.createDialog(
+      panel.asJComponent(),
+      i18nManager.getTranslation("_Import_fields"),
+      i18nManager.getTranslation("_Select_fields_to_import_into_table"),
+      winmgr.BUTTONS_OK_CANCEL
+    )
+    dialog.addActionListener(lambda e:panel.process(dialog, taskStatus))
+    dialog.show(WindowManager.MODE.WINDOW)
   

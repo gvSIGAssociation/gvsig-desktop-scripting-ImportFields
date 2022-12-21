@@ -24,7 +24,7 @@
     </at>
     <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
    </super>
-   <at name="id">/home/omartinez/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/2.5.1/scripts/addons/ImportFields/importFields.xml</at>
+   <at name="id">/home/fdiaz/gvSIG/plugins/org.gvsig.scripting.app.mainplugin/2.6.0/scripts/addons/ImportFields/importFields.xml</at>
    <at name="path">addons/ImportFields/importFields.xml</at>
    <at name="rowspecs">CENTER:4DLU:NONE,CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE,CENTER:3PX:NONE,CENTER:DEFAULT:NONE,CENTER:17PX:NONE,CENTER:DEFAULT:NONE,CENTER:3PX:NONE,CENTER:DEFAULT:NONE,CENTER:6PX:NONE,FILL:DEFAULT:GROW(1.0),CENTER:3PX:NONE</at>
    <at name="colspecs">FILL:4DLU:NONE,FILL:DEFAULT:NONE,FILL:126PX:GROW(1.0),FILL:4DLU:NONE</at>
@@ -75,13 +75,13 @@
              </object>
             </at>
             <at name="name">cmbTable1</at>
-            <at name="width">819</at>
+            <at name="width">1122</at>
             <at name="items">
              <object classname="com.jeta.forms.store.properties.ItemsProperty">
               <at name="name">items</at>
              </object>
             </at>
-            <at name="height">20</at>
+            <at name="height">24</at>
            </object>
           </at>
          </object>
@@ -134,13 +134,13 @@
              </object>
             </at>
             <at name="name">cmbTable2</at>
-            <at name="width">819</at>
+            <at name="width">1122</at>
             <at name="items">
              <object classname="com.jeta.forms.store.properties.ItemsProperty">
               <at name="name">items</at>
              </object>
             </at>
-            <at name="height">20</at>
+            <at name="height">24</at>
            </object>
           </at>
          </object>
@@ -193,13 +193,13 @@
              </object>
             </at>
             <at name="name">cmbField1</at>
-            <at name="width">819</at>
+            <at name="width">1122</at>
             <at name="items">
              <object classname="com.jeta.forms.store.properties.ItemsProperty">
               <at name="name">items</at>
              </object>
             </at>
-            <at name="height">20</at>
+            <at name="height">24</at>
            </object>
           </at>
          </object>
@@ -252,13 +252,13 @@
              </object>
             </at>
             <at name="name">cmbField2</at>
-            <at name="width">819</at>
+            <at name="width">1122</at>
             <at name="items">
              <object classname="com.jeta.forms.store.properties.ItemsProperty">
               <at name="name">items</at>
              </object>
             </at>
-            <at name="height">20</at>
+            <at name="height">24</at>
            </object>
           </at>
          </object>
@@ -318,7 +318,7 @@
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -372,13 +372,13 @@
             </at>
             <at name="name">lblField1</at>
             <at name="width">75</at>
-            <at name="text">_Unique_field</at>
+            <at name="text">_Link_field</at>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -432,13 +432,13 @@
             </at>
             <at name="name">lblTable2</at>
             <at name="width">75</at>
-            <at name="text">_Join_table</at>
+            <at name="text">_Import_from</at>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -492,13 +492,13 @@
             </at>
             <at name="name">lblField2</at>
             <at name="width">75</at>
-            <at name="text">_Unique_field</at>
+            <at name="text">_Link_field</at>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
               <at name="name">fill</at>
              </object>
             </at>
-            <at name="height">14</at>
+            <at name="height">15</at>
            </object>
           </at>
          </object>
@@ -523,7 +523,7 @@
          </at>
          <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
         </super>
-        <at name="id">embedded.1020970132</at>
+        <at name="id">embedded.2142170753</at>
         <at name="rowspecs">CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,FILL:51PX:GROW(1.0),CENTER:DEFAULT:NONE</at>
         <at name="colspecs">FILL:MIN(12DLU;DEFAULT):GROW(1.0)</at>
         <at name="components">
@@ -573,14 +573,14 @@
                   </object>
                  </at>
                  <at name="name">lblImportFields</at>
-                 <at name="width">893</at>
+                 <at name="width">1196</at>
                  <at name="text">_Fields_to_import</at>
                  <at name="fill">
                   <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
                    <at name="name">fill</at>
                   </object>
                  </at>
-                 <at name="height">14</at>
+                 <at name="height">15</at>
                 </object>
                </at>
               </object>
@@ -633,7 +633,7 @@
                   </object>
                  </at>
                  <at name="name">tblFields</at>
-                 <at name="width">891</at>
+                 <at name="width">1193</at>
                  <at name="scollBars">
                   <object classname="com.jeta.forms.store.properties.ScrollBarsProperty">
                    <at name="name">scollBars</at>
@@ -714,7 +714,7 @@
                   </object>
                  </at>
                  <at name="name">lblMessage</at>
-                 <at name="width">893</at>
+                 <at name="width">1196</at>
                  <at name="fill">
                   <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
                    <at name="name">fill</at>
@@ -745,7 +745,7 @@
               </at>
              </object>
             </at>
-            <at name="name"></at>
+            <at name="name"/>
             <at name="fill">
              <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
               <at name="name">fill</at>

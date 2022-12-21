@@ -21,7 +21,7 @@ def main(*args):
 
   ImportFieldsExtension().execute(None)
 
-class ImportFieldsExtension(ScriptingExtension, ActionListener):
+class ImportFieldsExtension(ScriptingExtension):
   def __init__(self):
     self.working = False
     
@@ -61,39 +61,19 @@ class ImportFieldsExtension(ScriptingExtension, ActionListener):
     return False
     
   def execute(self,actionCommand, *args):
-    self.panel = ImportFieldPanel()
-    self.panel.setPreferredSize(400,300)
+    panel = ImportFieldPanel()
     i18nManager = ToolsLocator.getI18nManager()
     winmgr = ToolsSwingLocator.getWindowManager()
-    self.taskStatus = ToolsLocator.getTaskStatusManager().createDefaultSimpleTaskStatus(i18nManager.getTranslation("_Import_fields"))
-    self.taskStatus.setAutoremove(True)
+    taskStatus = ToolsLocator.getTaskStatusManager().createDefaultSimpleTaskStatus(i18nManager.getTranslation("_Import_fields"))
+    taskStatus.setAutoremove(True)
     
-    self.dialog = winmgr.createDialog(
-      self.panel.asJComponent(),
+    dialog = winmgr.createDialog(
+      panel.asJComponent(),
       i18nManager.getTranslation("_Import_fields"),
       i18nManager.getTranslation("_Select_fields_to_import_into_table"),
       winmgr.BUTTONS_OK_CANCEL
     )
-    self.dialog.addActionListener(self)
-    self.dialog.show(WindowManager.MODE.WINDOW)
+    dialog.addActionListener(lambda e:panel.process(dialog, taskStatus))
+    dialog.show(WindowManager.MODE.WINDOW)
     
-  def actionPerformed(self,*args):
-    winmgr = ToolsSwingLocator.getWindowManager()
-    if self.dialog.getAction()==winmgr.BUTTON_CANCEL:
-      self.taskStatus.terminate()
-      return
-    if self.dialog.getAction()==winmgr.BUTTON_OK:
-      table1 = self.panel.getTable1()
-      table2 = self.panel.getTable2()
-      field1 = self.panel.getField1().getName()
-      field2 = self.panel.getField2().getName()
-  
-      data = self.panel.getFieldsToUse()
-      translator = self.panel.getTranslator()
-      thread.start_new_thread(self.process, (table1, field1, table2, field2, data, translator))
-    
-
-  def process(self, table1, field1, table2, field2, data, translator):
-    processImportFields(table1, field1, table2, field2, data, translator, self.taskStatus)
-    self.taskStatus.terminate()
   
